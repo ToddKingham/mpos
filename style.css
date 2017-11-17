@@ -1,0 +1,257 @@
+* {margin:0px; padding:0px;font-family: Arial;}
+
+header {
+    position: absolute;
+    top:0px;
+    height:50px;
+    width:100%;
+    border-bottom: 1px solid black;
+    background: linear-gradient(to bottom, rgba(136,191,232,1) 0%,rgba(112,176,224,1) 100%);
+    line-height: 50px;  
+}
+
+main {
+    display: flex;  
+    flex-flow: row wrap;
+      position: absolute;
+      width:100%;
+      top:51px;
+      bottom:0px;
+}
+
+aside {
+    visibility: collapse;
+    width:0px;
+    transition: width .2s;
+}
+
+aside.open{
+    flex: 1 auto;
+      visibility: visible;
+      width:150px;
+      display:block;
+      background-color:lightgrey;
+      box-shadow:0px 0px 10px 0px black inset;
+
+}
+
+section {
+    background-color: white;
+    flex: 20 0px;
+    width:100%;
+}
+section > h1{
+    position: fixed;
+    width: 50%;
+    text-align: center;
+    margin-left: 25%;
+    margin-top: 10px;
+    top: 0px;
+}
+
+    a {text-decoration: none;}
+    /*li {list-style-type: none;}*/
+
+    /* menu */
+    header #menu-link{
+        margin-left: 10px;
+        border: 1px solid gray;
+        padding: 10px;
+        background-color: lightblue;
+        color: black;
+        border-radius: 5px;
+    }
+    aside#menu {
+
+    }
+    aside#menu h1{
+      border-bottom: 1px solid lightslategray;
+      
+    }
+    ul#menu-list{
+
+    }
+    ul#menu-list li{
+      border-bottom: 1px solid lightslategray;
+      margin-right: 2%
+    }
+    ul#menu-list li a{
+        display: inline-block;
+        padding:10px;
+        width: 100%;
+    }
+
+    /* big grey lists */
+    ul.list {
+      list-style-type: none;
+      margin: 0px;
+      padding:0px;
+      left:0px;
+      border-bottom:1px solid gray;
+    }
+    ul.list li {
+      border-top: 1px solid gray;
+      overflow: hidden;
+      background: linear-gradient(to bottom, #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+      height: 50px;
+      line-height: 3;
+    }
+    ul.list li a.item {
+        width: 100%;
+        display: inline-block;
+        color: dark-blue;
+        height: 100%;
+        margin-left: 10px;
+    }
+    ul.list li span#refund-span {
+      position: absolute;
+      right: 0px;
+    }
+    ul.list li span#refund-span a.refund {    
+      display: inline-block;
+        border-left: 1px solid black;
+        width: 60px;
+        text-align: center;
+    }
+
+    /* items list */
+    div#items {
+      height: 350px;
+      overflow-x: hidden;
+      overflow-y: auto;
+      padding: 5%;
+    }
+    div.item {
+      display: inline-block;
+      margin: 5px;
+      text-align: center;
+      width: 80px;
+    }
+    div.item h1 {
+      font-weight: normal;
+      font-size: 20px;
+      margin-bottom: 0px;
+    }
+    div.item div.qty {
+      background: linear-gradient(to bottom, #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+      border: 1px solid black;
+        border-radius: 5px;
+        font-size: 40px;
+        padding: 20px 0;
+      color:#444;
+    }
+    
+    .remove{
+      background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #cc0000 0%, #cc0000 100%) repeat scroll 0 0;
+      border: 1px solid black;
+      border-radius: 5px;
+      color: #f0dd2d;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .back{
+      position: fixed;
+      height: 50px;
+      top: 0;
+      left: 5px;
+      line-height: 50px;
+    }
+
+    form#login-form {
+      margin-top: 60px;
+    }
+
+    #login-fields{
+      background: lightyellow none repeat scroll 0 0;
+        border: 1px dashed gray;
+        border-radius: 10px;
+        margin: 10px;
+        padding: 100px;
+        text-align: center;
+    }
+
+    div.button-footer {
+      background-color: white;
+        bottom: 0;
+        padding: 10px 0;
+        position: fixed;
+        width: 100%;
+    }
+
+    button {
+      border:1px solid black;
+      width:96%;
+      padding:20px;
+      background: linear-gradient(to bottom, #a9db80 0%,#96c56f 100%);
+      bottom:10px;
+      margin-left: 2%;
+    }
+    div.item div.green{
+      background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #fefcea 0%, #f1da36 100%) repeat scroll 0 0;
+        color: green;
+    }
+
+    div.item span.price {
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    div.call-out{
+      font-size: 40px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    div.call-out span{
+      color:green;
+    }
+
+    #transaction-container{
+      overflow-x: hidden;
+      overflow-y: auto;
+      height: 350px;
+    }
+    .trans-response{font-weight: bold;}
+    .trans-response li{list-style-type:disc;}
+    .trans-response li ul{font-weight:normal;margin-left: 30px}
+    .trans-response li label{
+      display: inline-block;
+        font-weight: bold;
+        width: 110px;
+    }
+    .trans-response li span{}
+
+    .message {
+      background: linear-gradient(to bottom, rgba(204,0,0,1) 0%,rgba(204,0,0,1) 100%);
+      border: 1px solid black;
+        bottom: 10px;
+        color: lightyellow;
+        display: none;
+        margin-left: 2%;
+        padding: 20px 0;
+        text-align: center;
+        width: 96%;
+    }
+
+    div#pay-types {display:flex; flex-direction:row; flex-wrap:wrap;}
+    .start-transaction {
+        background: rgba(0, 0, 0, 0) linear-gradient(to bottom, #ffffff 0%, #f6f6f6 47%, #ededed 100%) repeat scroll 0 0;
+        border: 1px solid black;
+        border-radius: 5px;
+        color: #444;
+        margin: 10px;
+        padding: 20px;
+    }
+
+
+
+    div#success {
+      color: green;
+      margin: 10px;
+      text-align: center;
+    }
+    div#success span {
+      font-size:36px;
+      font-weight: bold;
+    }

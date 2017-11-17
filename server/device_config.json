@@ -1,0 +1,36 @@
+{
+    "appConfig": {
+        "cachedTransactionsNotificationInterval": 300,
+        "cachedTransactionsNotificationDelay": 15,
+        "cachedTransactionsNotificationBatchCount": 2
+    },
+    "ieConfig": {
+        "var.app.cvvManual": true,
+        "var.app.avsManual": 2,
+        
+        "var.app.manualEntry": 4,
+
+        "var.app.cvvSwipe": false,
+        "var.app.avsSwipe": 0,
+
+        "var.app.signCapture": true,
+        "var.qps.vs.cvmLimit": 124,
+        "var.qps.mc.cvmLimit": 20,
+        "var.qps.ax.cvmLimit": 30,
+        "var.qps.ds.cvmLimit": 25,
+
+        "var.app.beepSuccess": false,
+        "var.app.inputTimeout": 20, 
+        "var.app.showTimeout": 15,
+        
+        "var.app.contactless": true,
+        "var.pinpad.dukptKeyIndex": 0,
+
+        "var.security.token": 2,
+        "var.pinpad.askCvv": false,
+
+        "var.app.partAuth": 0,
+        "var.app.showResultMessage": false
+
+    }
+}

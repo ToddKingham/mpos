@@ -1,0 +1,4 @@
+{
+	"000":{"reason_code":"SUC","message":"Success"},
+	"116":{"reason_code":"DEC","message":"Unfortunately the charge attempt was declined. Please try another card or contact your bank to see why it was declined."}
+}

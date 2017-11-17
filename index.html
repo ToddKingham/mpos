@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>mPOS</title>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <header class="header">
+        <a id="menu-link" href="#">menu</a>
+    </header>
+    <main>
+        <aside id="menu">
+            <h1>menu</h1>
+            <ul id="menu-list">
+                <li><a href="#events">Select Event</a></li>
+                <li><a href="#gates">Select a Gate</a></li>
+                <li><a href="#items">Inventory</a></li>
+                <li><a href="#batches" id="history">History</a></li>
+                <li><a href="#login">Logout</a></li>
+                <li><a href="#playground"><i>_ playground _</i></a></li>
+            </ul>
+        </aside>
+
+
+
+        <!-- HIDDEN PAGE -->
+        <section class="page" id="playground">
+            <h1>Playground</h1>
+            <div id="something"></div>
+            <ul class="list" id="stuff"></ul>
+            
+        </section>
+
+
+        <!-- LOGIN PAGE -->
+        <section class="page" id="login">
+            <h1>Login</h1>
+            
+            <form id="login-form" name="loginform">
+                <div id="login-fields">Login form goes here</div>
+                <div class="button-footer"><button>Login</button></div>
+            </form>
+        </section>
+
+        <!-- EVENTS PAGE -->
+        <section class="page" id="events">
+            <h1>Events</h1>
+            
+            <ul class="list">
+                <li><a class="item event" href="#" data-event="prod1">Prod1 (885-09744471)</a>
+                <li><a class="item event" href="#" data-event="prod2">Prod2 (885-01620110)</a>
+                <li><a class="item event" href="#" data-event="prod3">Prod3 (882-01369530)</a>
+                <li><a class="item event" href="#" data-event="flog">Camp Flog Naw (885-02188051)</a>
+                <li><a class="item event" href="#" data-event="ipc_stage">An IPC Event (staging)</a>
+                <li><a class="item event" href="#" data-event="cliq_prod">A Cliq Event (production)</a></li>
+            </ul>
+        </section>
+
+        <!-- GATES PAGE -->
+        <section class="page" id="gates">
+            <h1>Gates</h1>
+
+            <ul class="list">
+                <li><a class="item gate" href="#">Gate 1</a></li>
+                <li><a class="item gate" href="#">Gate 2</a></li>
+            </ul>
+        </section>
+
+        <!-- ITEMS PAGE -->
+        <section class="page" id="items">
+            <h1>Items</h1>
+            
+            <div class="call-out" id="totals-div">Total: <span id="pagetotal">$0</span></div>   
+                <div id="items">
+                    
+                   <!--  <div class="item" data-item="0" data-price="-.01">
+                        <h1>Negative</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div> -->
+
+                    <div class="item" data-item="1" data-price=".01">
+                        <h1>Penny</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div>
+
+                    <div class="item" data-item="2" data-price=".05">
+                        <h1>Nickel</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div>
+
+                    <div class="item" data-item="3" data-price=".10">
+                        <h1>Dime</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div>
+
+                    <div class="item" data-item="4" data-price=".25">
+                        <h1>Quarter</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div>
+
+                    <div class="item" data-item="5" data-price="1">
+                        <h1>Dollar</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div>
+
+                    <div class="item" data-item="6" data-price="5">
+                        <h1>Five</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div>
+
+                    <div class="item" data-item="7" data-price="10">
+                        <h1>Ten</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div>
+
+                    <div class="item" data-item="8" data-price="20">
+                        <h1>Twenty</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div>
+
+                    <div class="item" data-item="9" data-price="50">
+                        <h1>Fifty</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div>
+
+                    <div class="item" data-item="10" data-price="100">
+                        <h1>Benny</h1>
+                        <div class="qty">+</div>
+                        <span class="price"></span>
+                        <a href="#" class="remove">remove</a>
+                    </div>
+                
+                </div>
+
+                <div class="button-footer">
+                    <button id="checkout">Checkout</button>
+                </div>
+        </section>
+
+        <!-- PAYMENTS PAGE -->
+        <section class="page" id="payment">
+            <h1>Payment</h1>
+            
+            <div id="pay-types">
+                <div class="start-transaction" data-type="credit">Credit</div>
+                <div class="start-transaction" data-type="debit">Debit</div>
+                <div class="start-transaction" data-type="cash">Cash</div>
+            </div>
+
+            <p class="message" id="errorMsg">message goes here</p>
+        </section>
+
+        <!-- CONFIRMATION PAGE -->
+        <section class="page" id="confirm">
+            <h1>Confirmation</h1>
+
+            <div class="call-out" id="success">Order #: <span id="order-number"></span></div>
+            
+            <div id="transaction-container">
+                <div id="login-fields">page body goes here <a id="response" href="#">click here for raw response message</a></div>
+                <ul class="trans-response" id="transaction-response">
+                    <li>
+                        <label>TransactionId</label>
+                        <span id="transId">value</span>
+                    </li>
+                    <li>
+                        <label>Token</label>
+                        <span id="token">value</span>
+                    </li>
+                    <li>
+                        <label>First Name</label>
+                        <span id="firstName">value</span>
+                    </li>
+                    <li>
+                        <label>Last Name</label>
+                        <span id="lastName">value</span>
+                    </li>
+                    <li>
+                        <label>Success</label>
+                        <span id="success">value</span>
+                    </li>
+                    <li>
+                        <label>Message</label>
+                        <span id="responseMsg">value</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="button-footer">
+                <button id="new-order">New Order</button>
+            </div>
+            
+        </section>
+        
+        <!-- HISTORY PAGE -->
+        <section class="page" id="batches">
+            <h1>History</h1>
+
+            <ul id="batch-list" class="list"></ul>
+        </section>
+    </main>
+
+    <script type="text/javascript" src="/js/ajax.js?_=7"></script>
+    <script type="text/javascript" src="/js/cart.js?_=7"></script>
+    <script type="text/javascript" src="/js/batch.js?_=7"></script>
+    <script type="text/javascript" src="/js/mpos.js?_=7"></script>
+    <script type="text/javascript" src="/js/events.js?_=7"></script>
+    <script type="text/javascript" src="/js/engine.js?_=7"></script>
+    <script type="text/javascript" src="/js/app.js?_=7"></script>
+
+</body>
+</html>

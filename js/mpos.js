@@ -1,9 +1,5 @@
-var mPOS = {};
-(function(){
-
-    //localStorage.clear();
-
-    var private = {
+var mPOS = new (function(events){
+    var local = {
         createProtocolString: function(action,obj){
             var queryString = [];
             for(var x in obj){
@@ -21,30 +17,22 @@ var mPOS = {};
             queryString = encodeURI(queryString.join('&')).trim();
 
             return action.toLowerCase()+'://?'+queryString;
+        },
+
+        setEvents: function(events){
+            for(var event in events){
+                if(typeof eventBus[event]){ console.log()
+                    eventBus[event] = events[event];
+                }
+            }
         }
     };
 
     var eventBus = {
-        // CONNECTION STATE
-        LINEA_CONNECTED: function(value){},
-        LINEA_DISCONNECTED: function(value){},
-        
-        // CONFIGURATION 
-        LINEA_STORE_DEVICE_CONFIG_SUCCESS: function(value){},
-        LINEA_STORE_DEVICE_CONFIG_FAILURE: function(value){},
-        
-        // CREDENTIALS CONFIG
-        LINEA_STORE_EVENT_CREDENTIALS_SUCCESS: function(value){},
-        LINEA_STORE_EVENT_CREDENTIALS_FAILURE: function(value){},
-        
-        // PROVIDER CONFIG
-        LINEA_PROVIDER_CONFIG_SUCCESS: function(value){},
-        LINEA_PROVIDER_CONFIG_FAILURE: function(value){},
-        
-        // CASHED TRANSACTIONS
+        LINEA_DEVICE_STATE: function(value){},
+        LINEA_STORE_DEVICE_CONFIG: function(value){},
+        LINEA_STORE_EVENT_CREDENTIALS: function(value){},
         LINEA_CACHED_TRANSACTIONS: function(value){},
-    
-        // BATTERY ALERT
         LINEA_BATTERY_LEVEL: function(value){}
     };
 
@@ -52,8 +40,10 @@ var mPOS = {};
         onTransactionComplete: function(resp){ console.log(resp); },
         onClearedTransaction: function(resp){ console.log(resp); },
         onEvent: function(event, data){
+            var li = document.createElement('LI');
+            li.innerHTML = event +': '+JSON.stringify(data);
+            document.getElementById('stuff').appendChild(li);
             if(typeof eventBus[event] !== 'undefined'){
-                console.log(eventBus[event]);
                 eventBus[event](data);
             }
         }
@@ -62,13 +52,13 @@ var mPOS = {};
     this.send = function(action, obj){
         var fn;
         if(navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true:false){
-            this.send = function(a,o){location.href=private.createProtocolString(a,o);};
+            this.send = function(a,o){location.href=local.createProtocolString(a,o);};
         } else {
             this.send = function(a,o){console.log(o);};
         }
         this.send(action,obj);
     };
-
+    
     this.setCallback = function(name, fn){
         if(typeof callbacks[name]){
             callbacks[name] = fn;
@@ -76,26 +66,15 @@ var mPOS = {};
 
         }  
     };
+    
     this.getCallback = function(name){
         return callbacks[name];
     };
-    this.setEvents = function(events){
-        for(var event in events){
-            if(typeof eventBus[event]){ console.log()
-                eventBus[event] = events[event];
-            }
-        }
-    };
-}).apply(mPOS);
+    
+    local.setEvents(events);
+})(EVENTS);
 
 /*******  mPOS CALLBACK DELEGATES!!!! *******/
 window.onTransactionComplete = mPOS.getCallback('onTransactionComplete');
-window.onEvent = mPOS.getCallback('onEvent');
 window.onClearedTransaction = mPOS.getCallback('onClearedTransaction');
-
-onEvent("LINEA_DEVICE_STATE",{
-    "sled": "connected",
-    "bluetooth": "disconnected",
-    "whateverelse": "connected",
-    "battery": "50"
-});
+window.onEvent = mPOS.getCallback('onEvent');

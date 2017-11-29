@@ -1,8 +1,9 @@
 {
     "appConfig": {
-        "cachedTransactionsNotificationInterval": 300,
+        "cachedTransactionsNotificationInterval": 10,
         "cachedTransactionsNotificationDelay": 15,
-        "cachedTransactionsNotificationBatchCount": 2
+        "cachedTransactionsNotificationBatchCount": 2,
+        "batteryInfoNotificationInterval": 5
     },
     "ieConfig": {
         "var.app.cvvManual": true,
@@ -31,6 +32,5 @@
 
         "var.app.partAuth": 0,
         "var.app.showResultMessage": false
-
     }
 }

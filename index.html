@@ -13,6 +13,7 @@
     <main>
         <aside id="menu">
             <h1>menu</h1>
+
             <ul id="menu-list">
                 <li><a href="#events">Select Event</a></li>
                 <li><a href="#gates">Select a Gate</a></li>
@@ -20,17 +21,23 @@
                 <li><a href="#batches" id="history">History</a></li>
                 <li><a href="#login">Logout</a></li>
                 <li><a href="#playground"><i>_ playground _</i></a></li>
+                <li><a href="#cached"><i>_ cached _</i></a></li>
             </ul>
         </aside>
 
 
-
-        <!-- HIDDEN PAGE -->
+        <!-- PLAYGROUND PAGE -->
         <section class="page" id="playground">
             <h1>Playground</h1>
             <div id="something"></div>
-            <ul class="list" id="stuff"></ul>
+            <ul class="list" id="stuff"></ul>  
+        </section>
+
+        <!-- CACHED TRANSACTIONS PAGE -->
+        <section class="page" id="cached">
+            <h1>Cached</h1>
             
+            <ul class="list" id="cache-list"></ul>  
         </section>
 
 
@@ -72,91 +79,85 @@
         <section class="page" id="items">
             <h1>Items</h1>
             
-            <div class="call-out" id="totals-div">Total: <span id="pagetotal">$0</span></div>   
-                <div id="items">
-                    
-                   <!--  <div class="item" data-item="0" data-price="-.01">
-                        <h1>Negative</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div> -->
-
-                    <div class="item" data-item="1" data-price=".01">
-                        <h1>Penny</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div>
-
-                    <div class="item" data-item="2" data-price=".05">
-                        <h1>Nickel</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div>
-
-                    <div class="item" data-item="3" data-price=".10">
-                        <h1>Dime</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div>
-
-                    <div class="item" data-item="4" data-price=".25">
-                        <h1>Quarter</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div>
-
-                    <div class="item" data-item="5" data-price="1">
-                        <h1>Dollar</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div>
-
-                    <div class="item" data-item="6" data-price="5">
-                        <h1>Five</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div>
-
-                    <div class="item" data-item="7" data-price="10">
-                        <h1>Ten</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div>
-
-                    <div class="item" data-item="8" data-price="20">
-                        <h1>Twenty</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div>
-
-                    <div class="item" data-item="9" data-price="50">
-                        <h1>Fifty</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div>
-
-                    <div class="item" data-item="10" data-price="100">
-                        <h1>Benny</h1>
-                        <div class="qty">+</div>
-                        <span class="price"></span>
-                        <a href="#" class="remove">remove</a>
-                    </div>
+            <div class="call-out" id="totals-div">
+                Total: <span id="pagetotal">$0</span>
+            </div>   
                 
+            <div id="items">
+                <div class="item" data-item="1" data-price=".01">
+                    <h1>Penny</h1>
+                    <div class="qty">+</div>
+                    <span class="price"></span>
+                    <a href="#" class="remove">remove</a>
                 </div>
 
-                <div class="button-footer">
-                    <button id="checkout">Checkout</button>
+                <div class="item" data-item="2" data-price=".05">
+                    <h1>Nickel</h1>
+                    <div class="qty">+</div>
+                    <span class="price"></span>
+                    <a href="#" class="remove">remove</a>
                 </div>
+
+                <div class="item" data-item="3" data-price=".10">
+                    <h1>Dime</h1>
+                    <div class="qty">+</div>
+                    <span class="price"></span>
+                    <a href="#" class="remove">remove</a>
+                </div>
+
+                <div class="item" data-item="4" data-price=".25">
+                    <h1>Quarter</h1>
+                    <div class="qty">+</div>
+                    <span class="price"></span>
+                    <a href="#" class="remove">remove</a>
+                </div>
+
+                <div class="item" data-item="5" data-price="1">
+                    <h1>Dollar</h1>
+                    <div class="qty">+</div>
+                    <span class="price"></span>
+                    <a href="#" class="remove">remove</a>
+                </div>
+
+                <div class="item" data-item="6" data-price="5">
+                    <h1>Five</h1>
+                    <div class="qty">+</div>
+                    <span class="price"></span>
+                    <a href="#" class="remove">remove</a>
+                </div>
+
+                <div class="item" data-item="7" data-price="10">
+                    <h1>Ten</h1>
+                    <div class="qty">+</div>
+                    <span class="price"></span>
+                    <a href="#" class="remove">remove</a>
+                </div>
+
+                <div class="item" data-item="8" data-price="20">
+                    <h1>Twenty</h1>
+                    <div class="qty">+</div>
+                    <span class="price"></span>
+                    <a href="#" class="remove">remove</a>
+                </div>
+
+                <div class="item" data-item="9" data-price="50">
+                    <h1>Fifty</h1>
+                    <div class="qty">+</div>
+                    <span class="price"></span>
+                    <a href="#" class="remove">remove</a>
+                </div>
+
+                <div class="item" data-item="10" data-price="100">
+                    <h1>Benny</h1>
+                    <div class="qty">+</div>
+                    <span class="price"></span>
+                    <a href="#" class="remove">remove</a>
+                </div>
+            </div>
+
+            <div class="button-footer">
+                <button id="checkout">Checkout</button>
+            </div>
         </section>
 
         <!-- PAYMENTS PAGE -->
@@ -210,7 +211,6 @@
             <div class="button-footer">
                 <button id="new-order">New Order</button>
             </div>
-            
         </section>
         
         <!-- HISTORY PAGE -->
@@ -221,13 +221,14 @@
         </section>
     </main>
 
-    <script type="text/javascript" src="/js/ajax.js?_=7"></script>
-    <script type="text/javascript" src="/js/cart.js?_=7"></script>
-    <script type="text/javascript" src="/js/batch.js?_=7"></script>
-    <script type="text/javascript" src="/js/mpos.js?_=7"></script>
-    <script type="text/javascript" src="/js/events.js?_=7"></script>
-    <script type="text/javascript" src="/js/engine.js?_=7"></script>
-    <script type="text/javascript" src="/js/app.js?_=7"></script>
+    <script type="text/javascript" src="/js/ajax.js?_=9"></script>
+    <script type="text/javascript" src="/js/view.js?_=9"></script>
+    <script type="text/javascript" src="/js/utils.js?_=9"></script>
+    <script type="text/javascript" src="/js/cart.js?_=9"></script>
+    <script type="text/javascript" src="/js/batch.js?_=9"></script>
+    <script type="text/javascript" src="/js/events.js?_=9"></script>
+    <script type="text/javascript" src="/js/mpos.js?_=9"></script>
+    <script type="text/javascript" src="/js/app.js?_=9"></script>
 
 </body>
 </html>

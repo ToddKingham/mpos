@@ -1,5 +1,4 @@
-var BATCH = {};
-(function(){
+var BATCH = new (function(){
     var transactions = {};
 
     this.setItem = function(key, value){
@@ -21,5 +20,4 @@ var BATCH = {};
     };
 
     init();
-
-}).apply(BATCH);
+})();

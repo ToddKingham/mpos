@@ -1,5 +1,4 @@
-ajax = new (function(){
-
+var AJAX = new (function(){
 	var methods = {
 		xhr: function(mthd,url,cb,q){
 			if(q){

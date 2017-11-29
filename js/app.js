@@ -1,175 +1,259 @@
 (function(){
-		init();
+	init();
 
-		//on Menu
-		ENGINE.listen('click','#menu-link', toggleNav);
+	//on Menu
+	UTILS.listen('click','#menu-link', function(){
+        var el = document.getElementById('menu');
+            el.className = el.className === 'open' ? '' : 'open';
+    });
 
-		//on Navigate
-		ENGINE.listen('click', 'UL#menu-list li a', function(el){
-			ENGINE.changeView(this.href.split('#')[1]);
-			toggleNav();
+	//on Navigate
+	UTILS.listen('click', 'UL#menu-list li a', function(el){
+		VIEW.changeView(this.href.split('#')[1]);
+	});
+
+	//on Login
+	UTILS.listen('submit','#login-form', function(){
+		VIEW.changeView('events');
+
+		AJAX.get('server/device_config.json', function(reply){
+			mPOS.send("config", reply);
 		});
+	});
 
-		//on Login
-		ENGINE.listen('submit','#login-form', function(){
-			ENGINE.changeView('events');
-
-			ajax.get('server/device_config.json', function(reply){
-				mPOS.send("config", reply);
-			});
-		});
-
-		//on History
-		ENGINE.listen('click','#history', function(){
-			ENGINE.changeView('batches');
-		});
+	//on History
+	UTILS.listen('click','#history', function(){
+		VIEW.changeView('batches');
+	});
+	
+	//on Set Event
+	UTILS.listen('click','.event', function(){
+		VIEW.changeView('gates');
 		
-		//on Set Event
-		ENGINE.listen('click','.event', function(){
-			ENGINE.changeView('gates');
-			
-			var key = this.dataset.event;
-			ajax.get('server/credentials.json?_=1', function(reply){
-				reply[key].deviceId = 123;
-				mPOS.send("credentials", reply[key]);
-			});
+		var key = this.dataset.event;
+		AJAX.get('server/credentials.json?_=1', function(reply){
+			reply[key].deviceId = 123;
+			mPOS.send("credentials", reply[key]);
 		});
+	});
 
-		//on Set Gate
-		ENGINE.listen('click','.gate', function(){
-			ENGINE.changeView('items');
-		});
-		
-		//on Add Item
-		ENGINE.listen('click','.qty', function(){
-			var data = this.parentElement.dataset;
-			CART.add(data.item,parseFloat(data.price));
-			ENGINE.updateItemQty(this,data.item);
-		});
+	//on Set Gate
+	UTILS.listen('click','.gate', function(){
+		VIEW.changeView('items');
+	});
+	
+	//on Add Item
+	UTILS.listen('click','.qty', function(){
+		var data = this.parentElement.dataset;
+		CART.add(data.item,parseFloat(data.price));
+		updateItemQty(this,data.item);
+	});
 
-		//on Remove Item
-		ENGINE.listen('click','.remove', function(){
-			var parent = this.parentElement;
-			var data = parent.dataset;
-			CART.remove(data.item);
-			ENGINE.updateItemQty(parent.getElementsByClassName('qty')[0],data.item);
-		});
+	//on Remove Item
+	UTILS.listen('click','.remove', function(){
+		var parent = this.parentElement;
+		var data = parent.dataset;
+		CART.remove(data.item);
+		updateItemQty(parent.getElementsByClassName('qty')[0],data.item);
+	});
 
-		//on Checkout
-		ENGINE.listen('click','#checkout', function(){
-			if(CART.getQuantity()){
-				ENGINE.changeView('payment');
-			}
-		});
+	//on Checkout
+	UTILS.listen('click','#checkout', function(){
+		if(CART.getQuantity()){
+			VIEW.changeView('payment');
+		}
+	});
 
-		//start transaction
-		ENGINE.listen('click','.start-transaction', function(){
-			var type = this.dataset.type;
-			var params;
+	//start sale
+	UTILS.listen('click','.start-transaction', function(){
+		var type = this.dataset.type;
+		var params;
 
-			if(type !== 'cash'){
-				params = {
-					"transactionId": new Date()*1,
-					"cardType": type,
-					"transactionType": "sale",
-					"amount": CART.getTotal()
-				};
+		if(type !== 'cash'){
+			params = {
+				"transactionType": "sale",
+				"transactionId": new Date()*1,
+				"isDebit": type.toLowerCase() === "debit",
+				"amount": CART.getTotal()
+			};
 
-				mPOS.send("starttransaction", params);
-			}
-		});
+			mPOS.send("starttransaction", params);
+		}
+	});
 
-		//new order
-		ENGINE.listen('click','#new-order', function(){
-			ENGINE.changeView("items");
-		});
+	//new order
+	UTILS.listen('click','#new-order', function(){
+		VIEW.changeView("items");
+	});
+
+	function init(){
+
+		VIEW.init('page', document.location.href.split('#')[1] || 'login');
+
+		VIEW.setViewDelegate('_global', function(){ //perform these actions whenever the view changes
+	        document.getElementById('menu').className = '';//close the nav
+	        document.getElementById('menu-link').style.display = (this.view==='login') ? 'none' : 'inline';
+	    });
+
+		VIEW.setViewDelegate('batches', function(){
+	    	var batches = JSON.parse(localStorage.getItem('batch'));
+	    	var li, a, span, bat;
+	    	var ul = document.getElementById('batch-list');
+	    	var clone = ul.cloneNode(false);
+
+	    	var ancr = function(type, bat){
+	    		a = document.createElement("A");
+	    			a.href = '#';
+	    			a.className = 'refund';
+	    			a.innerHTML = type;
+	    			a.dataset.type = type;
+	    			a.dataset.batch = bat;
+	    		return a;	
+	    	}
+
+	    	for(var x in batches){
+	    		bat = batches[x];
+	    		li = document.createElement("LI");
+	    		li.innerHTML = x.substr(x.length-4,x.length) +' - '+ bat.response.name.split('/')[1] +' - '+ UTILS.dollarFormat(bat.response.approvedAmt);
+	    		span = document.createElement("SPAN");
+	    		span.id = 'refund-span';
+	    		
+	    		if(!bat.response.reversed){
+	        		span.appendChild(ancr('return', x));
+	        		span.appendChild(ancr('void', x));	
+	    		} else {
+	    			span.innerHTML = 'aweddydoe';
+	    		}
+	    		
+	    		li.appendChild(span);
+	    		clone.appendChild(li);
+	    	}
+	    	ul.parentNode.replaceChild(clone,ul);
+	    	
+
+	    	UTILS.listen('click','.refund', function(){
+	            var type = this.dataset.type;
+	            var bat = BATCH.getItem(this.dataset.batch);
+	            var params;
+
+	            switch(type){
+	                case 'return':
+	                    params = {
+	                        "transactionType": "return",
+	                        "transactionId": new Date()*1,
+	                        "isDebit":  false,
+	                        "amount": bat.response.approvedAmt * -1,
+	                        "token": bat.response.token,
+	                        "cardType": bat.response.cardType,
+	                        "expDate": bat.response.expDate,
+	                        "payload": bat.request,
+	                        "returnReason": " ",
+	                        "saleDate": bat.response.saleDate
+	                    };
+
+	                    break;
+
+	                case 'void':
+	                    params = {
+	                        "transactionType": "void",
+	                        "transactionId": new Date()*1,
+	                        "isDebit":  false,
+	                        "referenceNum": bat.response.referenceNum,
+	                        "transactionData": bat.transactionData,
+	                        "payload": bat.request
+	                    };
+	                    break;
+	            }
+	            
+	            mPOS.send("starttransaction", params);
+	        });
+	    });
 
 		//put prices into UI from item dataset
-		ENGINE.elMap(document.getElementsByClassName('price'), function(el){
-			el.innerHTML = ENGINE.dollarFormat(el.parentElement.dataset.price);
+		UTILS.htmlArray(document.getElementsByClassName('price')).map(function(el){
+			el.innerHTML = UTILS.dollarFormat(el.parentElement.dataset.price);
 		});
+	}
 
-		function init(){
-			ENGINE.setViewDelegate('_global', function(){
-				document.getElementById('menu-link').style.display = (this.view==='login') ? 'none' : 'inline';
-			});
-
-			ENGINE.setViewDelegate('batches', function(){
-				ENGINE.buildBatchesList(function(el){
-					var type = el.dataset.type;
-					var batch = BATCH.getItem(el.dataset.batch);
-					var params;
-
-					switch(type){
-						case 'return':
-							params = {
-								"transactionId": new Date()*1,
-							    "cardType":  "credit",
-							    "transactionType": "return",
-							    "amount": batch.response.approvedAmt * -1,
-							    "token": batch.response.token,
-							    "payload": batch.request
-							};
-							break;
-
-						case 'void':
-							params = {
-								"transactionId": new Date()*1,
-							    "cardType":  "credit",
-							    "transactionType": "void",
-							    "referenceNum": batch.response.referenceNum,
-							    "payload": batch.request
-							};
-							break;
-					}
-					
-					mPOS.send("starttransaction", params);
-				});
-			});
-
-			ENGINE.changeView(document.location.href.split('#')[1] || 'login');
+	function updateItemQty(el,id){
+		var qtyEl = el;
+		var cartItem = CART.getItems()[id];
+		if(typeof cartItem !== 'undefined'){
+			var qty = cartItem.qty;
+			qtyEl.innerHTML = qty ? qty : '+';
+			qtyEl.setAttribute('class',qty ? 'qty green' : 'qty');
+			document.getElementById('pagetotal').innerHTML = UTILS.dollarFormat(CART.getTotal());
 		}
+	}
 
-		function toggleNav(){
-			var el = document.getElementById('menu');
-				el.className = el.className === 'open' ? '' : 'open';
-		};
-
-	})();
+})();
 
 
-// switch(obj.response.txnType.split('.')[2]){
-// 	case 'sale':
-// 		params = {
-// 			"transactionId": obj.request.transactionId,
-// 			"cardType": obj.request.cardType,
-// 			"transactionType": obj.request.transactionType,
-// 			"amount": CART.getTotal()
-// 		};
-// 	break;
-	
-// 	case 'return':
-// 		params = {
-// 			"transactionId": batch.response.orderNumber,
-// 		    "cardType":  "credit",
-// 		    "transactionType": "return",
-// 		    "amount": batch.response.approvedAmt * -1,
-// 		    "token": batch.response.token
-// 		};
-// 	break;
+	    // mPOS interfaces
+    mPOS.setCallback("onTransactionComplete", function(resp){
+        var buildUL = function(id, obj){
+            var ul = document.getElementById(id);
+            var clone = ul.cloneNode(false);
+            var addEl = function(parent, obj){
+                var text, newUL;
+                for(var x in obj){
+                  el = document.createElement('li');
+                  parent.appendChild(el);
+                  if(typeof obj[x] === 'object'){
+                    newUL = document.createElement('ul');
+                    el.innerHTML = x;
+                    el.appendChild(newUL);
+                    addEl(newUL,obj[x]);
+                  }else{
+                    text = obj[x].toString();
+                    text = x + ' = ' + (text.substr(0,50) + (text.length > 50 ? '...' : ''));
+                    el.innerHTML = text;
+                  }
+                }
+            }
+            addEl(clone, obj);
+            ul.parentNode.replaceChild(clone,ul);
+        };
 
-// 	case 'void':
-// 		params = {
-// 			"transactionId": batch.response.orderNumber,
-// 		    "cardType":  "credit",
-// 		    "transactionType": "void",
-// 		    "referenceNum": batch.response.referenceNum
-// 		};
-// 	break;
-// }
+        buildUL('transaction-response',resp);
+        view.changeView('confirm');
 
+        if(resp.result){
+            var success = resp.response.responseCode === "000";
+            var transType = resp.response.reversalType ? 'void' : resp.response.txnType.split('.')[2];
+            document.getElementById('order-number').innerHTML = resp.response.authCode;
 
-    
+            if(success && transType === 'sale'){ // OUR SALE WAS SUCCESSFULL
+                var transactionType = resp.response.txnType.split('.')[2];
+                var batchTarget = resp;
+                var exclude = ['receipt','signature'];  
+                        
+                if(transactionType === 'sale'){
+                    for(var x in exclude){
+                        delete batchTarget[exclude[x]];             
+                    }
+                    batchTarget.response.reversed = false;
+                }else{
+                    batchTarget = batch.getItem(resp.request.transactionId);
+                    batchTarget.response.reversed = true;
+                }
+                                
+                batch.setItem(batchTarget.request.transactionId,batchTarget);
+            }
+            else if(success){ // OUR REFUND/VOID SUCCEEDED!
+                var original = JSON.parse(resp.payload);
+                var batchItem = batch.getItem(original.transactionId);
+                    batchItem.response.reversed = true;
+                    batch.setItem(original.transactionId,batchItem);
+               //mPOS.send("clearTransaction", resp.request);
+            }
+        } else {
+            alert(resp.errorMessage);
+        }
+    }.bind(this));
 
-    
-	
+    mPOS.setCallback("onClearedTransaction", function(obj){
+        if(!obj.result){
+            alert(obj.errorMessage);
+        }
+    });

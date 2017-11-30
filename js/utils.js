@@ -27,4 +27,21 @@ var UTILS = new (function(){
       return (!!parseFloat(s) || /^(true|yes)$/ig.test(s) );
     };
 
+    this.copyToClipboard = function(txt){
+            //create an input that we can copy the text into
+        var input = document.createElement('input');
+            input.value=txt;
+
+            //hide it from view (this function should be so fast it doesn't appear on the screen but we will do this anyway)
+            input.style.position="absolute";
+            input.style.top="-10px";
+            input.style.height="0px";
+
+            //add input to body, select the text, copy it to clipboard, then remove the input element
+            document.body.append(input);
+            input.select();
+            document.execCommand("Copy");
+            input.parentNode.removeChild(input);
+    };
+
 })();

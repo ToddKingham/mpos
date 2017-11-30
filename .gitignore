@@ -1,2 +1,4 @@
 /server/credentials.json
 /server/credentials_all.json
+/server/onEvent("LINEA_DEVICE_STATE", {
+/server/onTransactionComplete.json

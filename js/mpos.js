@@ -40,9 +40,9 @@ var mPOS = new (function(events){
         onTransactionComplete: function(resp){ console.log(resp); },
         onClearedTransaction: function(resp){ console.log(resp); },
         onEvent: function(event, data){
-            var li = document.createElement('LI');
-            li.innerHTML = event +': '+JSON.stringify(data);
-            document.getElementById('stuff').appendChild(li);
+            // var li = document.createElement('LI');
+            // li.innerHTML = event +': '+JSON.stringify(data);
+            // document.getElementById('stuff').appendChild(li);
             if(typeof eventBus[event] !== 'undefined'){
                 eventBus[event](data);
             }

@@ -28,7 +28,6 @@ var VIEW = new (function(){
 
     this.setViewDelegate = function(v, cb, args){
         params.viewDelegates[v] = cb;
-
         if(['_global',params.currentView].indexOf(v) !== -1){
             cb.apply({view:params.currentView}, args);
         }

@@ -1,13 +1,13 @@
 (function(){
 	init();
 
-	//on Menu
+	//on Menu (open it)
 	UTILS.listen('click','#menu-link', function(){
         var el = document.getElementById('menu');
             el.className = el.className === 'open' ? '' : 'open';
     });
 
-	//on Navigate
+	//on Menu Navigate
 	UTILS.listen('click', 'UL#menu-list li a', function(el){
 		VIEW.changeView(this.href.split('#')[1]);
 	});
@@ -19,11 +19,6 @@
 		AJAX.get('server/device_config.json', function(reply){
 			mPOS.send("config", reply);
 		});
-	});
-
-	//on History
-	UTILS.listen('click','#history', function(){
-		VIEW.changeView('batches');
 	});
 	
 	//on Set Event
@@ -86,6 +81,11 @@
 		VIEW.changeView("items");
 	});
 
+	//submit a batch
+	UTILS.listen('submit', '#batch-form', function(){ alert('set it');
+		BATCH.set(JSON.parse(this.batch.value));
+	});
+
 	function init(){
 
 		VIEW.init('page', document.location.href.split('#')[1] || 'login');
@@ -96,7 +96,7 @@
 	    });
 
 		VIEW.setViewDelegate('batches', function(){
-	    	var batches = JSON.parse(localStorage.getItem('batch'));
+	    	var batches = BATCH.get();
 	    	var li, a, span, bat;
 	    	var ul = document.getElementById('batch-list');
 	    	var clone = ul.cloneNode(false);
@@ -115,6 +115,7 @@
 	    		bat = batches[x];
 	    		li = document.createElement("LI");
 	    		li.innerHTML = x.substr(x.length-4,x.length) +' - '+ bat.response.name.split('/')[1] +' - '+ UTILS.dollarFormat(bat.response.approvedAmt);
+	    		li.dataset.transactionId = x
 	    		span = document.createElement("SPAN");
 	    		span.id = 'refund-span';
 	    		
@@ -133,7 +134,7 @@
 
 	    	UTILS.listen('click','.refund', function(){
 	            var type = this.dataset.type;
-	            var bat = BATCH.getItem(this.dataset.batch);
+	            var bat = BATCH.get(this.dataset.batch); console.log('BAT2', bat);
 	            var params;
 
 	            switch(type){
@@ -167,6 +168,29 @@
 	            
 	            mPOS.send("starttransaction", params);
 	        });
+
+
+	    });
+
+	    VIEW.setViewDelegate('playground', function(){
+	    	var batches = BATCH.get();
+	    	var ul = document.getElementById('stuff');
+	    	var clone = ul.cloneNode(false);
+	    	var li, a;
+		    	for(var batch in batches){
+		    		a = document.createElement('A');
+		    		a.href="#";
+		    		a.className='stuff-li';
+		    		a.dataset.transactionId = batch;
+		    		a.innerHTML = batch;
+		    		li = document.createElement('LI');
+		    		li.appendChild(a);
+		    		clone.appendChild(li);
+		    	}
+		    	ul.parentNode.replaceChild(clone, ul);
+		    	UTILS.listen('click', '.stuff-li', function(){
+		    		document.getElementById('something').value = JSON.stringify(BATCH.get(this.dataset.transactionId));
+		    	});
 	    });
 
 		//put prices into UI from item dataset
@@ -189,71 +213,45 @@
 })();
 
 
-	    // mPOS interfaces
-    mPOS.setCallback("onTransactionComplete", function(resp){
-        var buildUL = function(id, obj){
-            var ul = document.getElementById(id);
-            var clone = ul.cloneNode(false);
-            var addEl = function(parent, obj){
-                var text, newUL;
-                for(var x in obj){
-                  el = document.createElement('li');
-                  parent.appendChild(el);
-                  if(typeof obj[x] === 'object'){
-                    newUL = document.createElement('ul');
-                    el.innerHTML = x;
-                    el.appendChild(newUL);
-                    addEl(newUL,obj[x]);
-                  }else{
-                    text = obj[x].toString();
-                    text = x + ' = ' + (text.substr(0,50) + (text.length > 50 ? '...' : ''));
-                    el.innerHTML = text;
-                  }
-                }
-            }
-            addEl(clone, obj);
-            ul.parentNode.replaceChild(clone,ul);
-        };
 
-        buildUL('transaction-response',resp);
-        view.changeView('confirm');
-
-        if(resp.result){
-            var success = resp.response.responseCode === "000";
-            var transType = resp.response.reversalType ? 'void' : resp.response.txnType.split('.')[2];
-            document.getElementById('order-number').innerHTML = resp.response.authCode;
-
-            if(success && transType === 'sale'){ // OUR SALE WAS SUCCESSFULL
-                var transactionType = resp.response.txnType.split('.')[2];
-                var batchTarget = resp;
-                var exclude = ['receipt','signature'];  
-                        
-                if(transactionType === 'sale'){
-                    for(var x in exclude){
-                        delete batchTarget[exclude[x]];             
-                    }
-                    batchTarget.response.reversed = false;
-                }else{
-                    batchTarget = batch.getItem(resp.request.transactionId);
-                    batchTarget.response.reversed = true;
-                }
-                                
-                batch.setItem(batchTarget.request.transactionId,batchTarget);
+// mPOS interfaces
+mPOS.setCallback("onTransactionComplete", function(resp){
+    var buildUL = function(id, obj){
+        var ul = document.getElementById(id);
+        var clone = ul.cloneNode(false);
+        var addEl = function(parent, obj){
+            var text, newUL;
+            for(var x in obj){
+              el = document.createElement('li');
+              parent.appendChild(el);
+              if(typeof obj[x] === 'object'){
+                newUL = document.createElement('ul');
+                el.innerHTML = x;
+                el.appendChild(newUL);
+                addEl(newUL,obj[x]);
+              }else{
+                text = obj[x].toString();
+                text = x + ' = ' + (text.substr(0,50) + (text.length > 50 ? '...' : ''));
+                el.innerHTML = text;
+              }
             }
-            else if(success){ // OUR REFUND/VOID SUCCEEDED!
-                var original = JSON.parse(resp.payload);
-                var batchItem = batch.getItem(original.transactionId);
-                    batchItem.response.reversed = true;
-                    batch.setItem(original.transactionId,batchItem);
-               //mPOS.send("clearTransaction", resp.request);
-            }
-        } else {
-            alert(resp.errorMessage);
         }
-    }.bind(this));
+        addEl(clone, obj);
+        ul.parentNode.replaceChild(clone,ul);
+    };
 
-    mPOS.setCallback("onClearedTransaction", function(obj){
-        if(!obj.result){
-            alert(obj.errorMessage);
-        }
-    });
+    buildUL('transaction-response',resp);
+    VIEW.changeView('confirm');
+
+    if(resp.result){
+        BATCH.set(resp);
+    } else {
+        alert(resp.errorMessage);
+    }
+}.bind(this));
+
+mPOS.setCallback("onClearedTransaction", function(obj){
+    if(!obj.result){
+        alert(obj.errorMessage);
+    }
+});
